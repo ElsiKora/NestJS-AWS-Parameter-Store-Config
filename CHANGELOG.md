@@ -1,5 +1,11 @@
 # @elsikora/nestjs-aws-param-store-config
 
+## 1.2.6
+
+### Patch Changes
+
+- d9c6302: Update tsconfig.json to retain comments
+
 ## 1.2.5
 
 ### Patch Changes
