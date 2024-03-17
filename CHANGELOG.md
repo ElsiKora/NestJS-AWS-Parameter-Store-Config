@@ -1,5 +1,11 @@
 # @elsikora/nestjs-aws-param-store-config
 
+## 1.2.4
+
+### Patch Changes
+
+- e597997: Refactor error message in path assignment
+
 ## 1.2.3
 
 ### Patch Changes
