@@ -1,6 +1,6 @@
 {
 	"name": "@elsikora/nestjs-aws-parameter-store-config",
-	"version": "1.2.4",
+	"version": "1.2.5",
 	"description": "NestJS application configuration with AWS Parameter Store",
 	"author": "ElsiKora",
 	"license": "MIT",
