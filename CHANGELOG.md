@@ -1,5 +1,11 @@
 # @elsikora/nestjs-aws-param-store-config
 
+## 1.2.5
+
+### Patch Changes
+
+- 070cbaa: Add methods and documentation to configuration modules
+
 ## 1.2.4
 
 ### Patch Changes
