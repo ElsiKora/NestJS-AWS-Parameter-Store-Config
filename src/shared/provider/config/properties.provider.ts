@@ -1,4 +1,4 @@
-import { PARAMETER_STORE_CONFIG_PROPERTIES } from "../../../constants";
+import { PARAMETER_STORE_CONFIG_PROPERTIES } from "@shared/constant/config/constant";
 
 import type { ValueProvider } from "@nestjs/common";
 import type { IParameterStoreConfigProperties } from "@shared/interface/config/properties.interface";
