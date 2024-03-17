@@ -25,7 +25,7 @@
 		"patch": "npx changeset",
 		"patch:release": "npx changeset version",
 		"prebuild": "rimraf dist",
-		"release": "npm run install && npm run build && changeset publish"
+		"release": "npm install && npm run build && changeset publish"
 	},
 	"publishConfig": {
 		"access": "public"
