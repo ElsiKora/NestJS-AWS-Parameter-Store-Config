@@ -1,5 +1,11 @@
 # @elsikora/nestjs-aws-param-store-config
 
+## 1.2.2
+
+### Patch Changes
+
+- a282679: Correct license in README
+
 ## 1.2.1
 
 ### Patch Changes
