@@ -1,5 +1,11 @@
 # @elsikora/nestjs-aws-param-store-config
 
+## 1.2.3
+
+### Patch Changes
+
+- 65526f7: Refactor config parameter path assignment logic
+
 ## 1.2.2
 
 ### Patch Changes
