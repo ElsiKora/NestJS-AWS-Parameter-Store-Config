@@ -4,6 +4,12 @@
 
 ### Patch Changes
 
+- 7bf3703: Update build script and refactor path structures
+
+## 1.2.1
+
+### Patch Changes
+
 - 0dc01d7: Refactor configuration module and clean .gitignore file
 
 ## 1.2.0
