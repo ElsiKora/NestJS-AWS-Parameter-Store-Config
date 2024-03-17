@@ -15,9 +15,9 @@
 		"url": "git@github.com:ElsiKora/NestJS-AWS-Parameter-Store-Config.git"
 	},
 	"bugs": {
-		"url": "git@github.com:ElsiKora/NestJS-AWS-Parameter-Store-Config/issues"
+		"url": "https://github.com/ElsiKora/NestJS-AWS-Parameter-Store-Config/issues"
 	},
-	"homepage": "git@github.com:ElsiKora/NestJS-AWS-Parameter-Store-Config#readme",
+	"homepage": "https://github.com/ElsiKora/NestJS-AWS-Parameter-Store-Config#readme",
 	"scripts": {
 		"build": "tsc -p tsconfig.json",
 		"format": "prettier --write \"src/**/*.ts\" \"src/**/*.json\" \".github/**/*.yml\"",
@@ -25,7 +25,7 @@
 		"patch": "npx changeset",
 		"patch:release": "npx changeset version",
 		"prebuild": "rimraf dist",
-		"release": "npm run build && changeset publish"
+		"release": "npm run install && npm run build && changeset publish"
 	},
 	"publishConfig": {
 		"access": "public"
