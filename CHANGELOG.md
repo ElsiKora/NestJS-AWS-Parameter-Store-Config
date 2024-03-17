@@ -1,5 +1,11 @@
 # @elsikora/nestjs-aws-param-store-config
 
+## 1.2.0
+
+### Minor Changes
+
+- 02abe4c: Refactor and update configuration properties interface
+
 ## 1.1.1
 
 ### Patch Changes
