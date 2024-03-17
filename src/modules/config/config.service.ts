@@ -9,6 +9,12 @@ import type { Parameter } from "@aws-sdk/client-ssm";
 export class ParameterStoreConfigService {
 	public constructor(@Inject(PARAMETER_STORE_CONFIG_PARAMETERS) private readonly parameters: Array<Parameter>) {}
 
+	/**
+	 * Retrieves the value of a parameter with the specified name.
+	 *
+	 * @param {string} name - The name of the parameter to retrieve.
+	 * @return {null|string} - The value of the parameter if found, or null if not found.
+	 */
 	public get(name: string): null | string {
 		const found: Parameter = this.parameters.find((parameter: Parameter) => parameter.Name === name);
 

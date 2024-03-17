@@ -12,6 +12,15 @@ import type { GetParametersByPathCommandOutput, Parameter } from "@aws-sdk/clien
 export default class ParameterStoreService {
 	public constructor(@Inject(PARAMETER_STORE_SSM_CLIENT) private readonly client: SSMClient) {}
 
+	/**
+	 * Retrieves parameters from AWS Parameter Store by the specified path.
+	 *
+	 * @param {string} path - The path to the parameters in AWS Parameter Store.
+	 * @param {boolean} decryptParameters - Whether to decrypt the parameter values. Default is false.
+	 * @param {boolean} recursiveLoading - Whether to recursively load parameters under the specified path. Default is false.
+	 * @param {boolean} verbose - Whether to log verbose messages. Default is false.
+	 * @returns {Promise<Array<Parameter>>} - A promise that resolves to an array of Parameter objects.
+	 */
 	public async getParametersByPath(path: string, decryptParameters: boolean = false, recursiveLoading: boolean = false, verbose: boolean = false): Promise<Array<Parameter>> {
 		if (verbose) Logger.verbose(`Getting parameters from path: ${path}`, "ParameterStoreConfig");
 
