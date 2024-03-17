@@ -20,7 +20,7 @@ const ParameterStoreConfigParametersProvider: FactoryProvider<Array<Parameter>> 
 				path = `${path}/${properties.environment}`;
 			}
 		} else {
-			throw new Error("Either 'basePath' or 'application' must be specified in the configuration properties.");
+			path = "/";
 		}
 
 		return parameterStoreService.getParametersByPath(path, properties.decryptParameters ?? false, properties.recursiveLoading ?? false, properties.verbose ?? false);
