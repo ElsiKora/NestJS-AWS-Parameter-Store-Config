@@ -8,8 +8,20 @@ import type { IParameterStoreConfigProperties } from "@shared/interface/config/p
 const ParameterStoreConfigParametersProvider: FactoryProvider<Array<Parameter>> = {
 	inject: [PARAMETER_STORE_CONFIG_PROPERTIES, ParameterStoreService],
 	provide: PARAMETER_STORE_CONFIG_PARAMETERS,
-	useFactory: (properties: IParameterStoreConfigProperties, parameterStoreService: ParameterStoreService): Promise<Array<Parameter>> => {
-		const path: string = properties.basePath ?? `${properties.application}/${properties.environment}`;
+	useFactory: async (properties: IParameterStoreConfigProperties, parameterStoreService: ParameterStoreService): Promise<Array<Parameter>> => {
+		let path: string;
+
+		if (properties.basePath) {
+			path = properties.basePath;
+		} else if (properties.application) {
+			path = `/${properties.application}`;
+
+			if (properties.environment) {
+				path = `${path}/${properties.environment}`;
+			}
+		} else {
+			throw new Error("Either 'basePath' or 'application' must be specified in the configuration properties.");
+		}
 
 		return parameterStoreService.getParametersByPath(path, properties.decryptParameters ?? false, properties.recursiveLoading ?? false, properties.verbose ?? false);
 	},
