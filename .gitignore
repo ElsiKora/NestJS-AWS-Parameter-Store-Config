@@ -3,7 +3,6 @@
 /node_modules/
 
 # Dependency directories
-/node_modules/
 jspm_packages/
 
 # Logs
@@ -86,7 +85,6 @@ reaper.pid
 /pnpm-lock.yaml
 /bun.lockb
 # ignore all .lock-wscript files
-*.lock-wscript
 
 # Misc
 *.pid

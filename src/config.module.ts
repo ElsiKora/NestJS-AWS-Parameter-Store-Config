@@ -1,6 +1,6 @@
 import { Global, Module } from "@nestjs/common";
 
-import ParameterStoreService from "@/modules/aws/parameter-store/parameter-store.service";
+import ParameterStoreService from "@modules/aws/parameter-store/parameter-store.service";
 
 import { ParameterStoreConfigService } from "@modules/config/config.service";
 import { PARAMETER_STORE_CONFIG_PARAMETERS, PARAMETER_STORE_CONFIG_PROPERTIES } from "@shared/constant/config/constant";
