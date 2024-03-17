@@ -1,5 +1,11 @@
 # @elsikora/nestjs-aws-param-store-config
 
+## 1.2.1
+
+### Patch Changes
+
+- 0dc01d7: Refactor configuration module and clean .gitignore file
+
 ## 1.2.0
 
 ### Minor Changes
