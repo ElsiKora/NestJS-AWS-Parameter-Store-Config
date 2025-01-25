@@ -2,39 +2,39 @@
 	"name": "@elsikora/nestjs-aws-parameter-store-config",
 	"version": "1.2.6",
 	"description": "NestJS application configuration with AWS Parameter Store",
-	"author": "ElsiKora",
+	"homepage": "https://github.com/ElsiKora/NestJS-AWS-Parameter-Store-Config#readme",
+	"bugs": {
+		"url": "https://github.com/ElsiKora/NestJS-AWS-Parameter-Store-Config/issues"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git@github.com:ElsiKora/NestJS-AWS-Parameter-Store-Config.git"
+	},
 	"license": "MIT",
+	"author": "ElsiKora",
 	"main": "dist/index.js",
 	"files": [
 		"dist/**/*",
 		"README.md",
 		"LICENSE"
 	],
-	"repository": {
-		"type": "git",
-		"url": "git@github.com:ElsiKora/NestJS-AWS-Parameter-Store-Config.git"
-	},
-	"bugs": {
-		"url": "https://github.com/ElsiKora/NestJS-AWS-Parameter-Store-Config/issues"
-	},
-	"homepage": "https://github.com/ElsiKora/NestJS-AWS-Parameter-Store-Config#readme",
 	"scripts": {
+		"prebuild": "rimraf dist",
 		"build": "nest build && tsc-alias -p tsconfig.json",
 		"format": "prettier --check .",
+		"format:fix": "prettier --write .",
 		"lint": "eslint ./src && prettier --check .",
+		"lint:all": "npm run lint && npm run lint:types",
+		"lint:fix": "eslint ./src --fix && prettier --write .",
+		"lint:test": "eslint \"{src,apps,libs,test}/**/*.spec.ts\"",
+		"lint:types": "tsc --noEmit",
+		"lint:watch": "npx eslint-watch ./src/**/*.ts",
 		"patch": "npx changeset",
 		"patch:release": "npx changeset version",
-		"prebuild": "rimraf dist",
-		"release": "npm install && npm run build && changeset publish",
-		"lint:fix": "eslint ./src --fix && prettier --write .",
-		"format:fix": "prettier --write .",
-		"lint:watch": "npx eslint-watch ./src/**/*.ts",
-		"lint:types": "tsc --noEmit",
-		"lint:test": "eslint \"{src,apps,libs,test}/**/*.spec.ts\"",
-		"lint:all": "npm run lint && npm run lint:types"
+		"release": "npm install && npm run build && changeset publish"
 	},
-	"publishConfig": {
-		"access": "public"
+	"dependencies": {
+		"@changesets/cli": "^2.27.1"
 	},
 	"devDependencies": {
 		"@elsikora/eslint-config": "^3.2.2",
@@ -83,8 +83,7 @@
 		"@aws-sdk/client-ssm": "^3.535.0",
 		"@nestjs/common": "^8.0.0 || ^9.0.0 || ^10.0.0 || ^11.0.0"
 	},
-	"dependencies": {
-		"@changesets/cli": "^2.27.1"
-	},
-	"type": "module"
+	"publishConfig": {
+		"access": "public"
+	}
 }
