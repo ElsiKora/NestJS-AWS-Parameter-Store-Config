@@ -2,6 +2,7 @@ import typescript from "@rollup/plugin-typescript";
 import generatePackageJson from "rollup-plugin-generate-package-json";
 const external = ["@aws-sdk/client-ssm", "@nestjs/common"];
 import resolve from "@rollup/plugin-node-resolve";
+import dtsPathAlias from "rollup-plugin-dts-path-alias";
 
 export default [
 	{
@@ -25,6 +26,7 @@ export default [
 			resolve({
 				include: ["node_modules/tslib/**"],
 			}),
+			dtsPathAlias(),
 			typescript({
 				declaration: true,
 				declarationDir: "dist/esm",
@@ -60,6 +62,7 @@ export default [
 			resolve({
 				include: ["node_modules/tslib/**"],
 			}),
+
 			typescript({
 				declaration: true,
 				declarationDir: "dist/cjs",
@@ -67,6 +70,7 @@ export default [
 				sourceMap: true,
 				tsconfig: "./tsconfig.build.json",
 			}),
+			dtsPathAlias(),
 			generatePackageJson({
 				baseContents: { type: "commonjs" },
 				outputFolder: "dist/cjs",

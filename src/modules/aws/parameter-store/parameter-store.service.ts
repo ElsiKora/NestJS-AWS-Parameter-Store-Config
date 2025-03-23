@@ -4,7 +4,7 @@ import type { GetParametersByPathCommandOutput, Parameter } from "@aws-sdk/clien
 import { GetParametersByPathCommand, SSMClient } from "@aws-sdk/client-ssm";
 import { Inject, Injectable } from "@nestjs/common";
 import { Logger } from "@nestjs/common";
-import { PARAMETER_STORE_SSM_CLIENT } from "src/shared/constant/config/constant";
+import { PARAMETER_STORE_SSM_CLIENT } from "@shared/constant/config";
 
 @Injectable()
 export class ParameterStoreService {

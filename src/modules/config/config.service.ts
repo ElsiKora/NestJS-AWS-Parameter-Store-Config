@@ -1,10 +1,9 @@
 import type { Parameter } from "@aws-sdk/client-ssm";
 
+import { IConfigGetProperties } from "@modules/config/interface";
 import { Inject, Injectable } from "@nestjs/common";
 import { PARAMETER_STORE_CONFIG_PARAMETERS } from "@shared/constant/config";
 import { EInstanceName } from "@shared/enum";
-
-import { IConfigGetProperties } from "./interface";
 
 @Injectable()
 export class ParameterStoreConfigService {
@@ -16,12 +15,18 @@ export class ParameterStoreConfigService {
 	 * @returns {null | string} - The value of the parameter if found, or null if not found.
 	 */
 	public get(properties: IConfigGetProperties | string): null | string {
+		console.log("WANNA GET", properties);
+
 		if (typeof properties === "string") {
 			const found: Parameter | undefined = this.parameters.find((parameter: Parameter) => parameter.Name == properties);
+
+			console.log("FOUND1", found);
 
 			if (!found?.Value) {
 				return null;
 			}
+
+			console.log("FOUND", found);
 
 			return found.Value;
 		} else {
