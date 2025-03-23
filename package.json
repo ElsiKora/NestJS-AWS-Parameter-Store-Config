@@ -1,6 +1,6 @@
 {
 	"name": "@elsikora/nestjs-aws-parameter-store-config",
-	"version": "1.2.8",
+	"version": "1.2.9-dev.1",
 	"description": "NestJS application configuration with AWS Parameter Store",
 	"homepage": "https://github.com/ElsiKora/NestJS-AWS-Parameter-Store-Config#readme",
 	"bugs": {
