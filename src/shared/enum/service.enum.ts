@@ -1,3 +1,6 @@
+/**
+ * Enum representing various service types that can be configured.
+ */
 export enum EService {
 	AB_TESTING = "ab-testing",
 	ACTIVEMQ = "activemq",
