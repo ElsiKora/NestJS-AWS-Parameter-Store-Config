@@ -1,6 +1,7 @@
 import type { ModuleMetadata, Type } from "@nestjs/common/interfaces";
-import type { IParameterStoreConfigPropertiesFactory } from "@shared/interface/config/properties-factory.interface";
-import type { IParameterStoreConfigProperties } from "@shared/interface/config/properties.interface";
+
+import type { IParameterStoreConfigPropertiesFactory } from "./properties-factory.interface";
+import type { IParameterStoreConfigProperties } from "./properties.interface";
 
 export interface IParameterStoreConfigAsyncModuleProperties extends Pick<ModuleMetadata, "imports"> {
 	inject?: Array<any>;

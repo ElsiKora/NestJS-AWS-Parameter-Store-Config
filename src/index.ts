@@ -1,3 +1,6 @@
-export { ParameterStoreConfigService } from "@/modules/config/config.service";
-export { ParameterStoreConfigModule } from "@modules/config/config.module";
-export { PARAMETER_STORE_CONFIG_PARAMETERS } from "@shared/constant/config/constant";
+export * from "./modules/aws/parameter-store";
+export * from "./modules/config";
+export * from "./shared/constant/config";
+export * from "./shared/enum";
+export type * from "./shared/interface/config";
+export * from "./shared/provider/config";

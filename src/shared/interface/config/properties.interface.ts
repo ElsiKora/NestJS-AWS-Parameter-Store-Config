@@ -4,8 +4,8 @@ export interface IParameterStoreConfigProperties {
 	application?: string;
 	basePath?: string;
 	config?: SSMClientConfig;
-	decryptParameters?: boolean;
 	environment?: string;
-	recursiveLoading?: boolean;
-	verbose?: boolean;
+	isVerbose?: boolean;
+	shouldDecryptParameters?: boolean;
+	shouldUseRecursiveLoading?: boolean;
 }

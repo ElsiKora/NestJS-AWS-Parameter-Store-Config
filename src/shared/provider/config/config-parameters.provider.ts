@@ -1,11 +1,11 @@
-import ParameterStoreService from "@modules/aws/parameter-store/parameter-store.service";
-import { PARAMETER_STORE_CONFIG_PARAMETERS, PARAMETER_STORE_CONFIG_PROPERTIES } from "@shared/constant/config/constant";
-
 import type { Parameter } from "@aws-sdk/client-ssm";
 import type { FactoryProvider } from "@nestjs/common";
-import type { IParameterStoreConfigProperties } from "@shared/interface/config/properties.interface";
+import type { IParameterStoreConfigProperties } from "@shared/interface/config";
 
-const ParameterStoreConfigParametersProvider: FactoryProvider<Array<Parameter>> = {
+import { ParameterStoreService } from "@modules/aws/parameter-store";
+import { PARAMETER_STORE_CONFIG_PARAMETERS, PARAMETER_STORE_CONFIG_PROPERTIES } from "@shared/constant/config";
+
+export const ParameterStoreConfigParametersProvider: FactoryProvider<Array<Parameter>> = {
 	inject: [PARAMETER_STORE_CONFIG_PROPERTIES, ParameterStoreService],
 	provide: PARAMETER_STORE_CONFIG_PARAMETERS,
 	useFactory: async (properties: IParameterStoreConfigProperties, parameterStoreService: ParameterStoreService): Promise<Array<Parameter>> => {
@@ -23,8 +23,6 @@ const ParameterStoreConfigParametersProvider: FactoryProvider<Array<Parameter>> 
 			path = "/";
 		}
 
-		return parameterStoreService.getParametersByPath(path, properties.decryptParameters ?? false, properties.recursiveLoading ?? false, properties.verbose ?? false);
+		return parameterStoreService.getParametersByPath(path, properties.shouldDecryptParameters ?? false, properties.shouldUseRecursiveLoading ?? false, properties.isVerbose ?? false);
 	},
 };
-
-export default ParameterStoreConfigParametersProvider;
