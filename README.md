@@ -277,7 +277,7 @@ describe('MyService', () => {
 | - Caching layer to reduce API calls to AWS Parameter Store | 🚧 In Progress |
 | - Parameter validation with schema support | 🚧 In Progress |
 | - Support for parameter versioning and history tracking | 🚧 In Progress |
-| - Integration with AWS AppConfig for feature flags and dynamic configuration | 🚧 In Progress |
+| - Integration with AWS AppConfig for feature flags | 🚧 In Progress |
 | - Real-time parameter updates through event subscription | 🚧 In Progress |
 | - Built-in support for common parameter patterns (database connections, API keys, etc.) | 🚧 In Progress |
 | - Parameter transformation and type conversion utilities | 🚧 In Progress |
