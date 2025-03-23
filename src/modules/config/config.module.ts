@@ -1,11 +1,12 @@
 import type { DynamicModule, Provider, ValueProvider } from "@nestjs/common";
 import type { Type } from "@nestjs/common/interfaces";
 
-import { ParameterStoreService } from "@modules/aws/parameter-store";
 import { Global, Module } from "@nestjs/common";
 import { PARAMETER_STORE_CONFIG_PARAMETERS, PARAMETER_STORE_CONFIG_PROPERTIES } from "@shared/constant/config";
 import { IParameterStoreConfigAsyncModuleProperties, IParameterStoreConfigProperties, IParameterStoreConfigPropertiesFactory } from "@shared/interface/config";
 import { ParameterStoreConfigParametersProvider, ParameterStoreConfigPropertiesProvider, ParameterStoreConfigSSMProvider } from "@shared/provider/config";
+
+import { ParameterStoreService } from "../aws/parameter-store";
 
 import { ParameterStoreConfigService } from "./config.service";
 

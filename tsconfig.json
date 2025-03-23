@@ -1,7 +1,7 @@
 {
 	"compilerOptions": {
 		"allowSyntheticDefaultImports": true,
-		"baseUrl": "./",
+		"baseUrl": "./src",
 		"declaration": true,
 		"emitDeclarationOnly": false,
 		"emitDecoratorMetadata": true,
@@ -19,8 +19,8 @@
 		"noUnusedParameters": true,
 		"outDir": "./dist",
 		"paths": {
-			"@modules/*": ["src/modules/*"],
-			"@shared/*": ["src/shared/*"]
+			"@modules/*": ["modules/*"],
+			"@shared/*": ["shared/*"]
 		},
 		"removeComments": true,
 		"skipLibCheck": true,
