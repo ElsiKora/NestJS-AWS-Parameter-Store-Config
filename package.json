@@ -1,6 +1,6 @@
 {
 	"name": "@elsikora/nestjs-aws-parameter-store-config",
-	"version": "1.2.13",
+	"version": "1.2.14-dev.1",
 	"description": "NestJS application configuration with AWS Parameter Store",
 	"homepage": "https://github.com/ElsiKora/NestJS-AWS-Parameter-Store-Config#readme",
 	"bugs": {
@@ -38,8 +38,6 @@
 		"lint:types": "tsc --noEmit",
 		"lint:types:fix": "tsc --noEmit --skipLibCheck",
 		"lint:watch": "npx eslint-watch ./",
-		"patch": "npx changeset",
-		"patch:release": "npx changeset version",
 		"prepare": "husky",
 		"release": "semantic-release"
 	},
