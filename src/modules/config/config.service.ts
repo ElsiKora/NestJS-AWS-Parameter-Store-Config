@@ -15,18 +15,12 @@ export class ParameterStoreConfigService {
 	 * @returns {null | string} - The value of the parameter if found, or null if not found.
 	 */
 	public get(properties: IConfigGetProperties | string): null | string {
-		console.log("WANNA GET", properties);
-
 		if (typeof properties === "string") {
 			const found: Parameter | undefined = this.parameters.find((parameter: Parameter) => parameter.Name == properties);
-
-			console.log("FOUND1", found);
 
 			if (!found?.Value) {
 				return null;
 			}
-
-			console.log("FOUND", found);
 
 			return found.Value;
 		} else {
