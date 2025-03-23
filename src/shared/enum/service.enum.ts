@@ -1,3 +1,6 @@
+/**
+ * Enum representing various service types that can be configured.
+ */
 export enum EService {
 	AB_TESTING = "ab-testing",
 	ACTIVEMQ = "activemq",
@@ -170,7 +173,7 @@ export enum EService {
 	PYTORCH_SERVE = "pytorch-serve",
 	QDRANT = "qdrant",
 	RABBITMQ = "rabbitmq",
-	REAPER_API = "reaper-api",
+	REAPER = "reaper",
 	RECOMMENDATION_SERVICE = "recommendation-service",
 	RECURLY = "recurly",
 	REDIS = "redis",

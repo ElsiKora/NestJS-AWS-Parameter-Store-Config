@@ -1,4 +1,3 @@
-/* eslint-disable @elsikora/typescript/naming-convention */
 import type { GetParametersByPathCommandOutput, Parameter } from "@aws-sdk/client-ssm";
 
 import { GetParametersByPathCommand, SSMClient } from "@aws-sdk/client-ssm";
@@ -13,13 +12,13 @@ export class ParameterStoreService {
 	/**
 	 * Retrieves parameters from AWS Parameter Store by the specified path.
 	 * @param {string} path - The path to the parameters in AWS Parameter Store.
-	 * @param {boolean} decryptParameters - Whether to decrypt the parameter values. Default is false.
-	 * @param {boolean} recursiveLoading - Whether to recursively load parameters under the specified path. Default is false.
-	 * @param {boolean} verbose - Whether to log verbose messages. Default is false.
+	 * @param {boolean} shouldDecryptParameters - Whether to decrypt the parameter values. Default is false.
+	 * @param {boolean} shouldUseRecursiveLoading - Whether to recursively load parameters under the specified path. Default is false.
+	 * @param {boolean} isVerbose - Whether to log verbose messages. Default is false.
 	 * @returns {Promise<Array<Parameter>>} - A promise that resolves to an array of Parameter objects.
 	 */
-	public async getParametersByPath(path: string, decryptParameters: boolean = false, recursiveLoading: boolean = false, verbose: boolean = false): Promise<Array<Parameter>> {
-		if (verbose) Logger.verbose(`Getting parameters from path: ${path}`, "ParameterStoreConfig");
+	public async getParametersByPath(path: string, shouldDecryptParameters: boolean = false, shouldUseRecursiveLoading: boolean = false, isVerbose: boolean = false): Promise<Array<Parameter>> {
+		if (isVerbose) Logger.verbose(`Getting parameters from path: ${path}`, "ParameterStoreConfig");
 
 		let allParameters: Array<Parameter> = [];
 		let nextParametersToken: string | undefined;
@@ -28,8 +27,10 @@ export class ParameterStoreService {
 			const getParameters: GetParametersByPathCommand = new GetParametersByPathCommand({
 				NextToken: nextParametersToken,
 				Path: path,
-				Recursive: recursiveLoading,
-				WithDecryption: decryptParameters,
+				// eslint-disable-next-line @elsikora/typescript/naming-convention
+				Recursive: shouldUseRecursiveLoading,
+				// eslint-disable-next-line @elsikora/typescript/naming-convention
+				WithDecryption: shouldDecryptParameters,
 			});
 
 			const { NextToken, Parameters = [] }: GetParametersByPathCommandOutput = await this.client.send(getParameters);
@@ -37,7 +38,7 @@ export class ParameterStoreService {
 			nextParametersToken = NextToken;
 		} while (nextParametersToken);
 
-		if (verbose) Logger.verbose(`Found ${String(allParameters.length)} parameters`, "ParameterStoreConfig");
+		if (isVerbose) Logger.verbose(`Found ${String(allParameters.length)} parameters`, "ParameterStoreConfig");
 
 		return allParameters;
 	}

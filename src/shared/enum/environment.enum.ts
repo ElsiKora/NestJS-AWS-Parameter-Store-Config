@@ -1,3 +1,6 @@
+/**
+ * Enum representing different deployment environments.
+ */
 export enum EEnvironment {
 	DOCKER = "docker",
 	EC2 = "ec2",
