@@ -17,6 +17,8 @@ export default [
 				return "[name].js";
 			},
 			format: "esm",
+			preserveModules: true,
+			preserveModulesRoot: "src",
 			sourcemap: true,
 		},
 		plugins: [
@@ -50,6 +52,8 @@ export default [
 			},
 			exports: "named",
 			format: "cjs",
+			preserveModules: true,
+			preserveModulesRoot: "src",
 			sourcemap: true,
 		},
 		plugins: [
