@@ -1,3 +1,5 @@
+## [2.0.1](https://github.com/ElsiKora/NestJS-AWS-Parameter-Store-Config/compare/v2.0.0...v2.0.1) (2026-03-12)
+
 # [2.0.0](https://github.com/ElsiKora/NestJS-AWS-Parameter-Store-Config/compare/v1.2.14...v2.0.0) (2026-03-12)
 
 
