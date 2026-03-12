@@ -7,7 +7,7 @@ import type { IParameterStoreConfigProperties } from "./properties.interface";
  * Interface for asynchronous module configuration properties.
  * Provides different options for asynchronously configuring the Parameter Store module.
  */
-export interface IParameterStoreConfigAsyncModuleProperties extends Pick<ModuleMetadata, "imports"> {
+export interface IParameterStoreConfigAsyncModuleProperties<TFactoryArguments extends Array<unknown> = Array<unknown>> extends Pick<ModuleMetadata, "imports"> {
 	/** Optional array of dependencies to be injected into the factory function or class */
 	inject?: Array<InjectionToken | OptionalFactoryDependency>;
 	/** Optional class that implements IParameterStoreConfigPropertiesFactory to be instantiated */
@@ -15,5 +15,5 @@ export interface IParameterStoreConfigAsyncModuleProperties extends Pick<ModuleM
 	/** Optional existing provider implementing IParameterStoreConfigPropertiesFactory to be used */
 	useExisting?: Type<IParameterStoreConfigPropertiesFactory>;
 	/** Optional factory function that returns configuration properties */
-	useFactory?: (...arguments_: Array<unknown>) => IParameterStoreConfigProperties | Promise<IParameterStoreConfigProperties>;
+	useFactory?: (...arguments_: TFactoryArguments) => IParameterStoreConfigProperties | Promise<IParameterStoreConfigProperties>;
 }
