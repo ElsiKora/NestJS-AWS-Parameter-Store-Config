@@ -33,7 +33,7 @@ export class ParameterStoreConfigModule {
 	 * @param {IParameterStoreConfigAsyncModuleProperties} properties - The properties for the async module.
 	 * @returns {DynamicModule} - The registered dynamic module.
 	 */
-	public static registerAsync(properties: IParameterStoreConfigAsyncModuleProperties): DynamicModule {
+	public static registerAsync<TFactoryArguments extends Array<unknown> = Array<unknown>>(properties: IParameterStoreConfigAsyncModuleProperties<TFactoryArguments>): DynamicModule {
 		const providers: Array<Provider> = this.createAsyncProviders(properties);
 
 		return {
@@ -50,7 +50,7 @@ export class ParameterStoreConfigModule {
 	 * @returns {Provider} - The created async options provider.
 	 * @private
 	 */
-	private static createAsyncOptionsProvider(properties: IParameterStoreConfigAsyncModuleProperties): Provider {
+	private static createAsyncOptionsProvider<TFactoryArguments extends Array<unknown> = Array<unknown>>(properties: IParameterStoreConfigAsyncModuleProperties<TFactoryArguments>): Provider {
 		if (properties.useFactory) {
 			return {
 				inject: properties.inject ?? [],
@@ -76,7 +76,7 @@ export class ParameterStoreConfigModule {
 	 * @returns {Array<Provider>} An array of Providers for the module configuration.
 	 * @private
 	 */
-	private static createAsyncProviders(properties: IParameterStoreConfigAsyncModuleProperties): Array<Provider> {
+	private static createAsyncProviders<TFactoryArguments extends Array<unknown> = Array<unknown>>(properties: IParameterStoreConfigAsyncModuleProperties<TFactoryArguments>): Array<Provider> {
 		const optionsProvider: Provider = this.createAsyncOptionsProvider(properties);
 
 		const requestProviders: Array<Provider> = [optionsProvider, ParameterStoreConfigParametersProvider, ParameterStoreConfigSSMProvider, ParameterStoreConfigService, ParameterStoreService];
