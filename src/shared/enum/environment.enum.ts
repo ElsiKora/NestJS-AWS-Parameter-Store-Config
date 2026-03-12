@@ -1,14 +1,8 @@
 /**
- * Enum representing different deployment environments.
+ * Enum representing lifecycle environment tokens.
  */
 export enum EEnvironment {
-	DOCKER = "docker",
-	EC2 = "ec2",
-	ECS = "ecs",
-	EKS = "eks",
-	ELASTIC_BEANSTALK = "elastic-beanstalk",
-	HEROKU = "heroku",
-	KUBERNETES = "kubernetes",
+	DEVELOPMENT = "development",
 	LOCAL = "local",
 	PRODUCTION = "production",
 	STAGING = "staging",

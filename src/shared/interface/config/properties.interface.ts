@@ -1,21 +1,24 @@
 import type { SSMClientConfig } from "@aws-sdk/client-ssm";
+import type { EEnvironment, ENamespace } from "@shared/enum";
 
 /**
- * Interface for AWS Parameter Store configuration properties.
+ * Canonical AWS Parameter Store module defaults.
  */
 export interface IParameterStoreConfigProperties {
-	/** The application name to use for parameter paths */
-	application?: string;
-	/** The base path for parameter lookup */
-	basePath?: string;
+	/** The application name used in canonical parameter paths */
+	application: string;
 	/** AWS SSM client configuration */
 	config?: SSMClientConfig;
-	/** The environment name to use for parameter paths */
-	environment?: string;
+	/** The lifecycle environment used in canonical parameter paths */
+	environment: EEnvironment | string;
+	/** The default instance name used when lookups do not override it */
+	instanceName: string;
 	/** Whether to enable verbose logging */
 	isVerbose?: boolean;
+	/** The default namespace used when lookups do not override it */
+	namespace: ENamespace | string;
 	/** Whether to decrypt secure string parameters */
 	shouldDecryptParameters?: boolean;
-	/** Whether to load parameters recursively */
+	/** Whether to load parameters recursively. Defaults to true. */
 	shouldUseRecursiveLoading?: boolean;
 }

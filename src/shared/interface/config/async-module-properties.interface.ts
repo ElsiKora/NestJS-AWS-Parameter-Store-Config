@@ -1,4 +1,4 @@
-import type { ModuleMetadata, Type } from "@nestjs/common/interfaces";
+import type { InjectionToken, ModuleMetadata, OptionalFactoryDependency, Type } from "@nestjs/common/interfaces";
 
 import type { IParameterStoreConfigPropertiesFactory } from "./properties-factory.interface";
 import type { IParameterStoreConfigProperties } from "./properties.interface";
@@ -9,11 +9,11 @@ import type { IParameterStoreConfigProperties } from "./properties.interface";
  */
 export interface IParameterStoreConfigAsyncModuleProperties extends Pick<ModuleMetadata, "imports"> {
 	/** Optional array of dependencies to be injected into the factory function or class */
-	inject?: Array<any>;
+	inject?: Array<InjectionToken | OptionalFactoryDependency>;
 	/** Optional class that implements IParameterStoreConfigPropertiesFactory to be instantiated */
 	useClass?: Type<IParameterStoreConfigPropertiesFactory>;
 	/** Optional existing provider implementing IParameterStoreConfigPropertiesFactory to be used */
 	useExisting?: Type<IParameterStoreConfigPropertiesFactory>;
 	/** Optional factory function that returns configuration properties */
-	useFactory?: (...arguments_: Array<any>) => IParameterStoreConfigProperties | Promise<IParameterStoreConfigProperties>;
+	useFactory?: (...arguments_: Array<unknown>) => IParameterStoreConfigProperties | Promise<IParameterStoreConfigProperties>;
 }
