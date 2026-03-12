@@ -14,20 +14,35 @@ export const ParameterStoreConfigParametersProvider: FactoryProvider<Array<Param
 	inject: [PARAMETER_STORE_CONFIG_PROPERTIES, ParameterStoreService],
 	provide: PARAMETER_STORE_CONFIG_PARAMETERS,
 	useFactory: async (properties: IParameterStoreConfigProperties, parameterStoreService: ParameterStoreService): Promise<Array<Parameter>> => {
-		let path: string;
-
-		if (properties.basePath) {
-			path = properties.basePath;
-		} else if (properties.application) {
-			path = `/${properties.application}`;
-
-			if (properties.environment) {
-				path = `${path}/${properties.environment}`;
-			}
-		} else {
-			path = "/";
+		if (typeof properties.application !== "string") {
+			throw new TypeError("Parameter Store application must be a string.");
 		}
 
-		return parameterStoreService.getParametersByPath(path, properties.shouldDecryptParameters ?? false, properties.shouldUseRecursiveLoading ?? false, properties.isVerbose ?? false);
+		if (typeof properties.environment !== "string") {
+			throw new TypeError("Parameter Store environment must be a string.");
+		}
+
+		const application: string = properties.application.trim();
+		const environment: string = properties.environment.trim();
+
+		if (!application) {
+			throw new Error("Parameter Store application is required.");
+		}
+
+		if (!environment) {
+			throw new Error("Parameter Store environment is required.");
+		}
+
+		if (application.includes("/")) {
+			throw new Error('Parameter Store application must not contain "/".');
+		}
+
+		if (environment.includes("/")) {
+			throw new Error('Parameter Store environment must not contain "/".');
+		}
+
+		const path: string = `/${application}/${environment}`;
+
+		return parameterStoreService.getParametersByPath(path, properties.shouldDecryptParameters ?? false, properties.shouldUseRecursiveLoading ?? true, properties.isVerbose ?? false);
 	},
 };
