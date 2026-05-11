@@ -47,7 +47,7 @@
 		}
 	},
 	"devDependencies": {
-		"@commitlint/cli": "^20.4.4",
+		"@commitlint/cli": "^21.0.0",
 		"@commitlint/config-conventional": "^20.4.4",
 		"@elsikora/cladi": "^2.0.2",
 		"@elsikora/commitizen-plugin-commitlint-ai": "^2.5.0",
