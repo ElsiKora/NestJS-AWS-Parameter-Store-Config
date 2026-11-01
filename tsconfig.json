@@ -18,13 +18,15 @@
 		"noUnusedParameters": true,
 		"outDir": "./dist",
 		"paths": {
+			"@elsikora/nestjs-aws-parameter-store-config": ["./src/index.ts"],
 			"@modules/*": ["./src/modules/*"],
 			"@shared/*": ["./src/shared/*"]
 		},
 		"skipLibCheck": true,
 		"sourceMap": true,
 		"strict": true,
-		"target": "ESNext"
+		"target": "ESNext",
+		"types": ["node"]
 	},
 	"exclude": ["node_modules", "dist"],
 	"include": ["src/**/*.ts", "src/**/*.tsx", "test/**/*.ts"]

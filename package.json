@@ -43,6 +43,7 @@
 		"lint:watch": "npx eslint-watch ./",
 		"prepare": "husky",
 		"release": "semantic-release",
+		"test:consumer": "node scripts/test/consumer-smoke.mjs",
 		"test:unit": "vitest run --config vitest.unit.config.js"
 	},
 	"config": {
