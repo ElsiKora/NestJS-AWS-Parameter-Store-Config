@@ -5,9 +5,9 @@
  * Packs the built package and installs the tarball with the peer stack into a temporary project.
  * It first checks that importing the package (ESM import and CommonJS require) prints nothing and
  * leaves process.env alone even with a .env file in the working directory. Then, for every consumer
- * in test/consumer (ESM bundler, ESM nodenext, CommonJS node10 through require(esm)), it typechecks
- * the shared app in test/consumer/app/src and runs it: the app starts and closes a Nest 12
- * application context with register and registerAsync against a local SSM stub.
+ * in test/consumer (ESM bundler, ESM nodenext, and CommonJS node10 and default resolution through
+ * require(esm)), it typechecks the shared app in test/consumer/app/src and runs it: the app starts and
+ * closes a Nest 12 application context with register and registerAsync against a local SSM stub.
  *
  * Flags: --skip-build reuses the current dist, --keep leaves the temporary project in place.
  */
@@ -25,6 +25,8 @@ const CONSUMERS = [
 	{ name: "bundler", type: "module" },
 	{ name: "nodenext", type: "module" },
 	{ name: "commonjs", type: "commonjs" },
+	// The Core and Gameport shape: module commonjs without moduleResolution, which TypeScript 6 resolves as bundler
+	{ name: "commonjs-default", type: "commonjs" },
 ];
 const STACK = ["@aws-sdk/client-ssm", "@nestjs/common", "@nestjs/core", "@types/node", "reflect-metadata", "rxjs", "typescript"];
 
