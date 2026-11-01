@@ -5,14 +5,21 @@ const fs = require("node:fs");
 const { builtinModules } = require("node:module");
 const path = require("node:path");
 
+const { parseAst } = require("rollup/parseAst");
+const ts = require("typescript");
+
 const outputRoot = path.resolve("dist");
 const manifest = JSON.parse(fs.readFileSync(path.resolve("package.json"), "utf8"));
 const runtimePackages = new Set([...Object.keys(manifest.dependencies ?? {}), ...Object.keys(manifest.peerDependencies ?? {})]);
 const builtins = new Set(builtinModules);
-// Specifiers in `from "..."`, `import("...")`, side-effect `import "..."` and `require("...")` forms
-const specifierPattern = /(?:\bfrom\s+|\bimport\s*\(\s*|\bimport\s+|\brequire\s*\(\s*)["']([^"']+)["']/g;
-// JSDoc and line comments carry example imports that are not part of the module graph
-const commentLinePattern = /^\s*(?:\*|\/\/|\/\*)/;
+
+// Module-evaluation access to these globals means the package writes output or loads a .env file on import
+const SIDE_EFFECT_MEMBERS = new Map([
+	["console", undefined],
+	["process", new Set(["loadEnvFile", "stderr", "stdout"])],
+]);
+// Nodes whose bodies run later (a call or an instance), not when the module is evaluated
+const DEFERRED_NODE_TYPES = new Set(["ArrowFunctionExpression", "FunctionDeclaration", "FunctionExpression"]);
 const exportKeysCache = new Map();
 const problems = [];
 
@@ -100,7 +107,127 @@ function checkBareSpecifier(specifier) {
 }
 
 /**
- * Scans the build output and records every invalid import.
+ * Returns the side-effect global a member expression reads, such as `console.log` or `process.stdout`.
+ * @param {object} node - ESTree node.
+ * @returns {string | undefined} The accessed member, or undefined for any other node.
+ */
+function getSideEffectMember(node) {
+	if (node.type !== "MemberExpression" || node.object.type !== "Identifier" || !SIDE_EFFECT_MEMBERS.has(node.object.name)) {
+		return;
+	}
+
+	const properties = SIDE_EFFECT_MEMBERS.get(node.object.name);
+	const property = node.computed ? undefined : node.property.name;
+
+	if (!properties) {
+		return `${node.object.name}.${property ?? "[computed]"}`;
+	}
+
+	if (property && properties.has(property)) {
+		return `${node.object.name}.${property}`;
+	}
+}
+
+/**
+ * Returns the function an immediately invoked call runs, such as `(() => {})()` or `(function () {}).call(this)`.
+ * @param {object} node - ESTree node.
+ * @returns {object | undefined} The invoked function node, or undefined when the node is not such a call.
+ */
+function getInvokedFunction(node) {
+	if (node.type !== "CallExpression" && node.type !== "NewExpression") {
+		return;
+	}
+
+	let { callee } = node;
+
+	if (callee.type === "MemberExpression" && !callee.computed && ["apply", "call"].includes(callee.property.name)) {
+		callee = callee.object;
+	}
+
+	return DEFERRED_NODE_TYPES.has(callee.type) ? callee : undefined;
+}
+
+/**
+ * Collects `console.*`, `process.stdout`, `process.stderr` and `process.loadEnvFile` accesses that run when the module is evaluated.
+ * Function bodies, class methods and instance fields run later and are skipped; immediately invoked functions, decorators, static fields and static blocks are not.
+ * @param {object} node - ESTree node.
+ * @param {Array<string>} found - Accesses found so far, as `member at offset`.
+ * @returns {void}
+ */
+function collectTopLevelSideEffects(node, found) {
+	if (!node || typeof node.type !== "string" || DEFERRED_NODE_TYPES.has(node.type)) {
+		return;
+	}
+
+	if ((node.type === "MethodDefinition" || node.type === "PropertyDefinition") && !node.static) {
+		collectTopLevelSideEffects(node.computed ? node.key : undefined, found);
+
+		for (const decorator of node.decorators ?? []) {
+			collectTopLevelSideEffects(decorator, found);
+		}
+
+		return;
+	}
+
+	const invokedFunction = getInvokedFunction(node);
+
+	if (invokedFunction) {
+		collectTopLevelSideEffects(invokedFunction.body, found);
+	}
+
+	const member = getSideEffectMember(node);
+
+	if (member) {
+		found.push(`${member} at offset ${String(node.start)}`);
+	}
+
+	for (const [key, value] of Object.entries(node)) {
+		if (key === "start" || key === "end" || !value || typeof value !== "object") {
+			continue;
+		}
+
+		for (const child of Array.isArray(value) ? value : [value]) {
+			collectTopLevelSideEffects(child, found);
+		}
+	}
+}
+
+/**
+ * Checks one generated file: every import specifier and, for JavaScript, module-evaluation output and .env loading.
+ * @param {string} entryPath - Absolute file path.
+ * @returns {void}
+ */
+function checkFile(entryPath) {
+	const relativePath = path.relative(process.cwd(), entryPath);
+	const fileContent = fs.readFileSync(entryPath, "utf8");
+
+	if (fileContent.includes("node_modules/")) {
+		problems.push(`${relativePath}: path into node_modules`);
+	}
+
+	// The TypeScript scanner skips comments and finds import, export, import type, import() and require() specifiers
+	for (const { fileName: specifier } of ts.preProcessFile(fileContent, true, true).importedFiles) {
+		const problem = specifier.startsWith(".") ? checkRelativeSpecifier(entryPath, specifier) : checkBareSpecifier(specifier);
+
+		if (problem) {
+			problems.push(`${relativePath}: "${specifier}": ${problem}`);
+		}
+	}
+
+	if (!entryPath.endsWith(".js")) {
+		return;
+	}
+
+	const sideEffects = [];
+	collectTopLevelSideEffects(parseAst(fileContent), sideEffects);
+
+	for (const sideEffect of sideEffects) {
+		problems.push(`${relativePath}: ${sideEffect} runs on import`);
+	}
+}
+
+/**
+ * Scans the build output and records every problem.
  * @param {string} directoryPath - Directory to scan.
  * @returns {void}
  */
@@ -110,32 +237,8 @@ function scanDirectory(directoryPath) {
 
 		if (entry.isDirectory()) {
 			scanDirectory(entryPath);
-			continue;
-		}
-
-		if (!entry.name.endsWith(".d.ts") && !entry.name.endsWith(".js")) {
-			continue;
-		}
-
-		const relativePath = path.relative(process.cwd(), entryPath);
-		const fileContent = fs.readFileSync(entryPath, "utf8");
-
-		if (fileContent.includes("node_modules/")) {
-			problems.push(`${relativePath}: path into node_modules`);
-		}
-
-		for (const line of fileContent.split("\n")) {
-			if (commentLinePattern.test(line)) {
-				continue;
-			}
-
-			for (const [, specifier] of line.matchAll(specifierPattern)) {
-				const problem = specifier.startsWith(".") ? checkRelativeSpecifier(entryPath, specifier) : checkBareSpecifier(specifier);
-
-				if (problem) {
-					problems.push(`${relativePath}: "${specifier}": ${problem}`);
-				}
-			}
+		} else if (entry.name.endsWith(".d.ts") || entry.name.endsWith(".js")) {
+			checkFile(entryPath);
 		}
 	}
 }
@@ -148,8 +251,8 @@ if (!fs.existsSync(outputRoot)) {
 scanDirectory(outputRoot);
 
 if (problems.length > 0) {
-	process.stderr.write(`Build output has invalid imports:\n${problems.map((problem) => `- ${problem}`).join("\n")}\n`);
+	process.stderr.write(`Build output has invalid imports or import side effects:\n${problems.map((problem) => `- ${problem}`).join("\n")}\n`);
 	process.exit(1);
 }
 
-process.stdout.write("Every relative import in dist has a .js extension and a matching file, and every bare import is a dependency or peer root or an explicit exports key.\n");
+process.stdout.write("Every relative import in dist has a .js extension and a matching file, every bare import is a dependency or peer root or an explicit exports key, and no module writes output or loads a .env file on import.\n");
