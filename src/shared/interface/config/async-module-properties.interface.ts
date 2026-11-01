@@ -1,4 +1,4 @@
-import type { InjectionToken, ModuleMetadata, OptionalFactoryDependency, Type } from "@nestjs/common/interfaces";
+import type { InjectionToken, ModuleMetadata, OptionalFactoryDependency, Type } from "@nestjs/common";
 
 import type { IParameterStoreConfigPropertiesFactory } from "./properties-factory.interface";
 import type { IParameterStoreConfigProperties } from "./properties.interface";

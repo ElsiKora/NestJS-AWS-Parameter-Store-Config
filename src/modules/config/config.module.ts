@@ -1,5 +1,4 @@
-import type { DynamicModule, Provider, ValueProvider } from "@nestjs/common";
-import type { Type } from "@nestjs/common/interfaces";
+import type { DynamicModule, Provider, Type, ValueProvider } from "@nestjs/common";
 
 import { Global, Module } from "@nestjs/common";
 import { PARAMETER_STORE_CONFIG_PARAMETERS, PARAMETER_STORE_CONFIG_PROPERTIES } from "@shared/constant/config";

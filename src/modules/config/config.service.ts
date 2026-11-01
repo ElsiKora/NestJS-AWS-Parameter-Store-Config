@@ -5,6 +5,13 @@ import { IConfigGetProperties } from "@modules/config/interface";
 import { Inject, Injectable } from "@nestjs/common";
 import { PARAMETER_STORE_CONFIG_PARAMETERS, PARAMETER_STORE_CONFIG_PROPERTIES } from "@shared/constant/config";
 
+interface IResolvedModuleDefaults {
+	application: string;
+	environment: string;
+	instanceName: string;
+	namespace: string;
+}
+
 @Injectable()
 export class ParameterStoreConfigService {
 	public constructor(
@@ -93,11 +100,4 @@ export class ParameterStoreConfigService {
 			namespace: this.normalizeSegment(this.properties.namespace, "namespace"),
 		};
 	}
-}
-
-interface IResolvedModuleDefaults {
-	application: string;
-	environment: string;
-	instanceName: string;
-	namespace: string;
 }
