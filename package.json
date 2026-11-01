@@ -42,7 +42,8 @@
 		"lint:types:fix": "tsc --noEmit --skipLibCheck",
 		"lint:watch": "npx eslint-watch ./",
 		"prepare": "husky",
-		"release": "semantic-release"
+		"release": "semantic-release",
+		"test:unit": "vitest run --config vitest.unit.config.js"
 	},
 	"config": {
 		"commitizen": {
@@ -62,6 +63,7 @@
 		"@nestjs/common": "^12.3.2",
 		"@nestjs/core": "^12.3.2",
 		"@nestjs/schematics": "^12.0.12",
+		"@nestjs/testing": "^12.3.2",
 		"@rollup/plugin-node-resolve": "^16.0.3",
 		"@rollup/plugin-typescript": "^12.3.1",
 		"@saithodev/semantic-release-backmerge": "^4.0.1",
@@ -72,6 +74,7 @@
 		"@semantic-release/npm": "^13.2.0",
 		"@semantic-release/release-notes-generator": "^14.1.1",
 		"@types/node": "^26.6.6",
+		"@vitest/coverage-v8": "^5.0.5",
 		"commitizen": "^4.3.2",
 		"conventional-changelog-conventionalcommits": "^10.4.1",
 		"eslint": "^10.14.0",
@@ -88,7 +91,9 @@
 		"semantic-release": "^25.0.9",
 		"tslib": "^2.9.1",
 		"typescript": "~6.0.3",
-		"unplugin-dts": "^1.1.2"
+		"unplugin-dts": "^1.1.2",
+		"vite": "^8.3.5",
+		"vitest": "^5.0.5"
 	},
 	"peerDependencies": {
 		"@aws-sdk/client-ssm": ">=3.535.0 <4",
