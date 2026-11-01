@@ -18,9 +18,10 @@
 - 🏗️ Canonical SSM Contract — Enforces a deterministic /<app>/<env>/<namespace>/<instance>/<path> model, eliminating ad-hoc parameter naming chaos across teams
 - ⚡ Single Recursive Load — Fetches all parameters under /<app>/<env> at startup into an in-memory cache, serving lookups instantly with zero runtime SSM calls
 - 🛡️ Fail-Fast Validation — Catches missing segments, empty strings, whitespace, and illegal '/' characters at boot time with explicit error messages
-- 🔌 Broad NestJS Compatibility — Supports NestJS v8 through v11 with both register() and registerAsync() patterns, including factory, class, and existing provider injection
+- 🔌 NestJS 12 and ES Modules — Built for NestJS 12 as an ES module package that CommonJS applications load through Node.js `require(esm)`, with register() and registerAsync() patterns including factory, class, and existing provider injection
 
 ## 📚 Table of Contents
+
 - [Description](#-description)
 - [Tech Stack](#-tech-stack)
 - [Features](#-features)
@@ -29,12 +30,14 @@
 - [Prerequisites](#-prerequisites)
 - [Installation](#-installation)
 - [Usage](#-usage)
+- [Migration Notes](#-migration-notes)
 - [Roadmap](#-roadmap)
 - [FAQ](#-faq)
 - [License](#-license)
 - [Acknowledgments](#-acknowledgments)
 
 ## 📖 Description
+
 Managing application configuration across multiple environments, namespaces, and deployment targets is one of the most error-prone aspects of cloud-native development. **NestJS AWS Parameter Store Config** eliminates that complexity by enforcing a single, canonical SSM path contract:
 
 ```
@@ -54,19 +57,20 @@ With built-in enums for 90+ namespace tokens (AWS, GCP, Azure, databases, messag
 
 ## 🛠️ Tech Stack
 
-| Category | Technologies |
-|----------|-------------|
-| **Language** | TypeScript |
-| **Runtime** | Node.js |
-| **Framework** | NestJS |
-| **Cloud** | AWS Systems Manager (SSM) |
-| **Build Tool** | Rollup, TypeScript Compiler |
-| **Linting** | ESLint, Prettier |
-| **CI/CD** | GitHub Actions, Semantic Release |
-| **Package Manager** | npm |
-| **Code Quality** | Husky, Commitlint, Lint-Staged |
+| Category            | Technologies                     |
+| ------------------- | -------------------------------- |
+| **Language**        | TypeScript                       |
+| **Runtime**         | Node.js                          |
+| **Framework**       | NestJS                           |
+| **Cloud**           | AWS Systems Manager (SSM)        |
+| **Build Tool**      | Rollup, TypeScript Compiler      |
+| **Linting**         | ESLint, Prettier                 |
+| **CI/CD**           | GitHub Actions, Semantic Release |
+| **Package Manager** | npm                              |
+| **Code Quality**    | Husky, Commitlint, Lint-Staged   |
 
 ## 🚀 Features
+
 - ✨ ****Canonical Path Contract** — All parameter lookups resolve through a strict `/<application>/<environment>/<namespace>/<instanceName>/<path>` model, ensuring consistency across all services and environments**
 - ✨ ****Recursive Parameter Loading** — Loads all parameters under `/<application>/<environment>` at startup using paginated SSM API calls, building an in-memory cache for instant lookups**
 - ✨ ****Sync & Async Module Registration** — Supports `register()` for static config and `registerAsync()` with `useFactory`, `useClass`, and `useExisting` patterns for dynamic configuration**
@@ -74,7 +78,7 @@ With built-in enums for 90+ namespace tokens (AWS, GCP, Azure, databases, messag
 - ✨ ****90+ Built-In Namespace Tokens** — Curated `ENamespace` enum covering AWS, GCP, Azure services, databases, message brokers, observability tools, and more**
 - ✨ ****Lifecycle Environment Enum** — `EEnvironment` provides `LOCAL`, `DEVELOPMENT`, `STAGING`, `PRODUCTION`, and `TEST` tokens out of the box**
 - ✨ ****Strict Input Validation** — Fails fast with descriptive errors for missing segments, empty strings, whitespace-only values, and segments containing `/`**
-- ✨ ****Dual Module Output** — Ships both ESM and CommonJS builds with full TypeScript declarations and source maps**
+- ✨ ****ES Module Package** — Ships one ES module build with source maps and TypeScript declarations whose relative imports carry `.js` extensions, so `bundler`, `nodenext` and CommonJS `node10` consumers all typecheck**
 - ✨ ****Secure Parameter Decryption** — Optional `shouldDecryptParameters` flag enables transparent decryption of SecureString parameters**
 - ✨ ****Verbose Logging Mode** — Optional `isVerbose` flag enables detailed NestJS Logger output during parameter loading for debugging**
 - ✨ ****Global Module** — Registered as a `@Global()` module, making `ParameterStoreConfigService` injectable anywhere without re-importing**
@@ -142,8 +146,13 @@ NestJS-AWS-Parameter-Store-Config/
 │   │   ├── mirror-to-codecommit.yml
 │   │   ├── qodana-quality-scan.yml
 │   │   ├── release.yml
-│   │   └── snyk-security-scan.yml
+│   │   ├── snyk-security-scan.yml
+│   │   └── test.yml
 │   └── dependabot.yml
+├── scripts/
+│   ├── test/
+│   │   └── consumer-smoke.mjs
+│   └── check-declaration-imports.cjs
 ├── src/
 │   ├── modules/
 │   │   ├── aws/
@@ -154,34 +163,37 @@ NestJS-AWS-Parameter-Store-Config/
 │   │   ├── interface/
 │   │   └── provider/
 │   └── index.ts
+├── test/
+│   ├── consumer/
+│   └── unit/
 ├── CHANGELOG.md
 ├── commitlint.config.js
 ├── eslint.config.js
 ├── LICENSE
 ├── lint-staged.config.js
 ├── nest-cli.json
-├── package-lock.json
 ├── package.json
 ├── prettier.config.js
 ├── README.md
 ├── release.config.js
 ├── rollup.config.js
 ├── tsconfig.build.json
-└── tsconfig.json
+├── tsconfig.json
+└── vitest.unit.config.js
 ```
 
 </details>
 
 ## 📋 Prerequisites
 
-- Node.js >= 16.0.0
-- npm >= 8.0.0
-- NestJS >= 8.0.0 (supports v8, v9, v10, v11)
-- @aws-sdk/client-ssm >= 3.535.0
+- Node.js `^22.13.0 || >=24.11.0`
+- `@nestjs/common` `>=12.3.2 <13`
+- `@aws-sdk/client-ssm` `>=3.535.0 <4`
 - AWS credentials configured (IAM role, environment variables, or AWS CLI profile)
 - AWS SSM parameters created following the canonical path convention
 
 ## 🛠 Installation
+
 ```bash
 # Install the package and its required peer dependencies
 npm install @elsikora/nestjs-aws-parameter-store-config @aws-sdk/client-ssm @nestjs/common
@@ -203,7 +215,7 @@ cd NestJS-AWS-Parameter-Store-Config
 # Install dependencies
 npm install
 
-# Build ESM and CJS outputs
+# Build the ES module output and check its imports
 npm run build
 
 # Run linting
@@ -211,9 +223,16 @@ npm run lint:all
 
 # Type check
 npm run lint:types
+
+# Run unit tests
+npm run test:unit
+
+# Pack the build and run it in ESM (bundler, nodenext) and CommonJS (node10, default resolution) consumer apps
+npm run test:consumer
 ```
 
 ## 💡 Usage
+
 ## Quick Start
 
 ### 1. Register the Module
@@ -222,25 +241,21 @@ Add `ParameterStoreConfigModule` to your root `AppModule` with your canonical de
 
 ```typescript
 import { Module } from "@nestjs/common";
-import {
-  EEnvironment,
-  ENamespace,
-  ParameterStoreConfigModule,
-} from "@elsikora/nestjs-aws-parameter-store-config";
+import { EEnvironment, ENamespace, ParameterStoreConfigModule } from "@elsikora/nestjs-aws-parameter-store-config";
 
 @Module({
-  imports: [
-    ParameterStoreConfigModule.register({
-      application: "gameport",
-      environment: EEnvironment.STAGING,
-      namespace: ENamespace.AWS_ECS_FARGATE,
-      instanceName: "reaper-api",
-      shouldDecryptParameters: true,
-      config: {
-        region: "eu-north-1",
-      },
-    }),
-  ],
+	imports: [
+		ParameterStoreConfigModule.register({
+			application: "gameport",
+			environment: EEnvironment.STAGING,
+			namespace: ENamespace.AWS_ECS_FARGATE,
+			instanceName: "reaper-api",
+			shouldDecryptParameters: true,
+			config: {
+				region: "eu-north-1",
+			},
+		}),
+	],
 })
 export class AppModule {}
 ```
@@ -252,32 +267,28 @@ For dynamic configuration that depends on environment variables or other provide
 ```typescript
 import { Module } from "@nestjs/common";
 import { ConfigModule, ConfigService } from "@nestjs/config";
-import {
-  EEnvironment,
-  ENamespace,
-  ParameterStoreConfigModule,
-} from "@elsikora/nestjs-aws-parameter-store-config";
+import { EEnvironment, ENamespace, ParameterStoreConfigModule } from "@elsikora/nestjs-aws-parameter-store-config";
 
 @Module({
-  imports: [
-    ConfigModule.forRoot(),
-    ParameterStoreConfigModule.registerAsync({
-      imports: [ConfigModule],
-      inject: [ConfigService],
-      useFactory: (configService: ConfigService) => ({
-        application: configService.getOrThrow("APP_NAME"),
-        environment: configService.getOrThrow("NODE_ENV"),
-        namespace: ENamespace.AWS_ECS_FARGATE,
-        instanceName: configService.getOrThrow("SERVICE_NAME"),
-        shouldDecryptParameters: true,
-        shouldUseRecursiveLoading: true,
-        isVerbose: configService.get("VERBOSE") === "true",
-        config: {
-          region: configService.getOrThrow("AWS_REGION"),
-        },
-      }),
-    }),
-  ],
+	imports: [
+		ConfigModule.forRoot(),
+		ParameterStoreConfigModule.registerAsync({
+			imports: [ConfigModule],
+			inject: [ConfigService],
+			useFactory: (configService: ConfigService) => ({
+				application: configService.getOrThrow("APP_NAME"),
+				environment: configService.getOrThrow("NODE_ENV"),
+				namespace: ENamespace.AWS_ECS_FARGATE,
+				instanceName: configService.getOrThrow("SERVICE_NAME"),
+				shouldDecryptParameters: true,
+				shouldUseRecursiveLoading: true,
+				isVerbose: configService.get("VERBOSE") === "true",
+				config: {
+					region: configService.getOrThrow("AWS_REGION"),
+				},
+			}),
+		}),
+	],
 })
 export class AppModule {}
 ```
@@ -288,35 +299,32 @@ Since the module is `@Global()`, you can inject `ParameterStoreConfigService` in
 
 ```typescript
 import { Injectable } from "@nestjs/common";
-import {
-  ENamespace,
-  ParameterStoreConfigService,
-} from "@elsikora/nestjs-aws-parameter-store-config";
+import { ENamespace, ParameterStoreConfigService } from "@elsikora/nestjs-aws-parameter-store-config";
 
 @Injectable()
 export class DatabaseService {
-  constructor(
-    private readonly config: ParameterStoreConfigService,
-  ) {}
+	constructor(private readonly config: ParameterStoreConfigService) {}
 
-  getDatabaseHost(): string {
-    // Resolves: /gameport/staging/aws-rds/aurora-postgres/host
-    return this.config.get({
-      namespace: ENamespace.AWS_RDS,
-      instanceName: "aurora-postgres",
-      path: ["host"],
-    }) ?? "localhost";
-  }
+	getDatabaseHost(): string {
+		// Resolves: /gameport/staging/aws-rds/aurora-postgres/host
+		return (
+			this.config.get({
+				namespace: ENamespace.AWS_RDS,
+				instanceName: "aurora-postgres",
+				path: ["host"],
+			}) ?? "localhost"
+		);
+	}
 
-  getDatabasePort(): number {
-    // Resolves: /gameport/staging/aws-rds/aurora-postgres/port
-    const port = this.config.get({
-      namespace: ENamespace.AWS_RDS,
-      instanceName: "aurora-postgres",
-      path: ["port"],
-    });
-    return port ? parseInt(port, 10) : 5432;
-  }
+	getDatabasePort(): number {
+		// Resolves: /gameport/staging/aws-rds/aurora-postgres/port
+		const port = this.config.get({
+			namespace: ENamespace.AWS_RDS,
+			instanceName: "aurora-postgres",
+			path: ["port"],
+		});
+		return port ? parseInt(port, 10) : 5432;
+	}
 }
 ```
 
@@ -327,34 +335,32 @@ Access parameters from different namespaces without re-registering:
 ```typescript
 @Injectable()
 export class AppConfigService {
-  constructor(
-    private readonly config: ParameterStoreConfigService,
-  ) {}
+	constructor(private readonly config: ParameterStoreConfigService) {}
 
-  // Uses module defaults: /gameport/staging/aws-ecs-fargate/reaper-api/api/version
-  getApiVersion(): string | null {
-    return this.config.get({ path: ["api", "version"] });
-  }
+	// Uses module defaults: /gameport/staging/aws-ecs-fargate/reaper-api/api/version
+	getApiVersion(): string | null {
+		return this.config.get({ path: ["api", "version"] });
+	}
 
-  // Override namespace: /gameport/staging/aws-secrets-manager/database/secret-id
-  getDatabaseSecretId(): string | null {
-    return this.config.get({
-      namespace: ENamespace.AWS_SECRETS_MANAGER,
-      instanceName: "database",
-      path: ["secret-id"],
-    });
-  }
+	// Override namespace: /gameport/staging/aws-secrets-manager/database/secret-id
+	getDatabaseSecretId(): string | null {
+		return this.config.get({
+			namespace: ENamespace.AWS_SECRETS_MANAGER,
+			instanceName: "database",
+			path: ["secret-id"],
+		});
+	}
 
-  // Override everything: /other-app/production/aws-lambda/processor/timeout
-  getExternalConfig(): string | null {
-    return this.config.get({
-      application: "other-app",
-      environment: "production",
-      namespace: ENamespace.AWS_LAMBDA,
-      instanceName: "processor",
-      path: ["timeout"],
-    });
-  }
+	// Override everything: /other-app/production/aws-lambda/processor/timeout
+	getExternalConfig(): string | null {
+		return this.config.get({
+			application: "other-app",
+			environment: "production",
+			namespace: ENamespace.AWS_LAMBDA,
+			instanceName: "processor",
+			path: ["timeout"],
+		});
+	}
 }
 ```
 
@@ -364,47 +370,70 @@ Not limited to the built-in enums — pass any string:
 
 ```typescript
 this.config.get({
-  namespace: "custom-service",
-  instanceName: "my-instance",
-  path: ["some", "deep", "config"],
+	namespace: "custom-service",
+	instanceName: "my-instance",
+	path: ["some", "deep", "config"],
 });
 // Resolves: /gameport/staging/custom-service/my-instance/some/deep/config
 ```
 
 ### Configuration Options Reference
 
-| Option | Type | Required | Default | Description |
-|--------|------|----------|---------|-------------|
-| `application` | `string` | ✅ | — | Product/system name (first path segment) |
-| `environment` | `EEnvironment \| string` | ✅ | — | Lifecycle environment token |
-| `namespace` | `ENamespace \| string` | ✅ | — | Default owner/runtime/resource token |
-| `instanceName` | `string` | ✅ | — | Default deployable unit or resource instance |
-| `config` | `SSMClientConfig` | ❌ | `{}` | AWS SSM client configuration |
-| `shouldDecryptParameters` | `boolean` | ❌ | `false` | Decrypt SecureString parameters |
-| `shouldUseRecursiveLoading` | `boolean` | ❌ | `true` | Recursively load all nested parameters |
-| `isVerbose` | `boolean` | ❌ | `false` | Enable verbose logging during parameter loading |
+| Option                      | Type                     | Required | Default | Description                                     |
+| --------------------------- | ------------------------ | -------- | ------- | ----------------------------------------------- |
+| `application`               | `string`                 | ✅       | —       | Product/system name (first path segment)        |
+| `environment`               | `EEnvironment \| string` | ✅       | —       | Lifecycle environment token                     |
+| `namespace`                 | `ENamespace \| string`   | ✅       | —       | Default owner/runtime/resource token            |
+| `instanceName`              | `string`                 | ✅       | —       | Default deployable unit or resource instance    |
+| `config`                    | `SSMClientConfig`        | ❌       | `{}`    | AWS SSM client configuration                    |
+| `shouldDecryptParameters`   | `boolean`                | ❌       | `false` | Decrypt SecureString parameters                 |
+| `shouldUseRecursiveLoading` | `boolean`                | ❌       | `true`  | Recursively load all nested parameters          |
+| `isVerbose`                 | `boolean`                | ❌       | `false` | Enable verbose logging during parameter loading |
+
+## 🔄 Migration Notes
+
+### Migrating to 3.0
+
+3.0.0 moves the package to NestJS 12 and ships it as ES modules only. The configuration API, the canonical path contract and the exported names do not change.
+
+| Requirement      | 2.x                            | 3.0                       |
+| ---------------- | ------------------------------ | ------------------------- |
+| Node.js          | 16 and later                   | `^22.13.0 \|\| >=24.11.0` |
+| `@nestjs/common` | `^8 \|\| ^9 \|\| ^10 \|\| ^11` | `>=12.3.2 <13`            |
+| Module format    | ESM and CommonJS               | ESM only                  |
+
+1. Upgrade Node.js and NestJS first, following the [NestJS migration guide](https://docs.nestjs.com/migration-guide). Applications on NestJS 11 or older, or on Node.js 20, stay on 2.x.
+2. Install peers with explicit ranges, for example `npm install @nestjs/common@^12 @aws-sdk/client-ssm@^3`, and check the tree with `npm ls`.
+3. Import only from the package root. The 2.x `exports` map already had only `.`, so Node.js never resolved deep imports. 3.0 also removes `dist/esm`, `dist/cjs` and the `require` condition, so TypeScript with `node10` resolution, which ignores `exports`, no longer finds types for deep paths such as `@elsikora/nestjs-aws-parameter-store-config/dist/cjs/...` either.
+
+**ES module applications** import the package as before, with `moduleResolution` set to `bundler`, `node16` or `nodenext`. The declarations now carry `.js` extensions on every relative import, so `nodenext` consumers get the types.
+
+**CommonJS applications** keep `require("@elsikora/nestjs-aws-parameter-store-config")`. Node.js loads the ES module through `require(esm)`, which works without a flag on every supported Node.js release. TypeScript with `module: commonjs` finds the types either way: with `moduleResolution: node10` through the top-level `types` field (TypeScript 6 then needs `"ignoreDeprecations": "6.0"`), and without `moduleResolution`, which TypeScript 6 resolves as `bundler`, through `exports`.
+
+Importing the package has no side effects: it loads no `.env` file and writes nothing to the console. Logging happens only while parameters load and only with `isVerbose: true`. CI checks this on the packed tarball.
 
 ## 🛣 Roadmap
 
 <details>
 <summary>Click to expand</summary>
 
-| Task / Feature | Status |
-|---|---|
-| Canonical SSM path contract (`/<app>/<env>/<ns>/<instance>/<path>`) | ✅ Done |
-| Sync and async module registration | ✅ Done |
-| Paginated recursive parameter loading | ✅ Done |
-| Per-call namespace and instance overrides | ✅ Done |
-| Strict input validation with fail-fast errors | ✅ Done |
-| Dual ESM/CJS module output with source maps | ✅ Done |
-| Built-in ENamespace enum (90+ tokens) | ✅ Done |
-| Verbose logging mode | ✅ Done |
-| Automated semantic releases with backmerge | ✅ Done |
-| TTL-based parameter cache refresh | 🚧 In Progress |
-| Parameter change event subscriptions | 🚧 In Progress |
-| Batch `getMany()` API for multi-path lookups | 🚧 In Progress |
-| Optional Zod/class-validator schema validation on retrieved values | 🚧 In Progress |
-| Unit and integration test suite | 🚧 In Progress |
+| Task / Feature                                                      | Status         |
+| ------------------------------------------------------------------- | -------------- |
+| Canonical SSM path contract (`/<app>/<env>/<ns>/<instance>/<path>`) | ✅ Done        |
+| Sync and async module registration                                  | ✅ Done        |
+| Paginated recursive parameter loading                               | ✅ Done        |
+| Per-call namespace and instance overrides                           | ✅ Done        |
+| Strict input validation with fail-fast errors                       | ✅ Done        |
+| ES module output with extension-qualified declarations              | ✅ Done        |
+| NestJS 12 support                                                   | ✅ Done        |
+| Built-in ENamespace enum (90+ tokens)                               | ✅ Done        |
+| Verbose logging mode                                                | ✅ Done        |
+| Automated semantic releases with backmerge                          | ✅ Done        |
+| TTL-based parameter cache refresh                                   | 🚧 In Progress |
+| Parameter change event subscriptions                                | 🚧 In Progress |
+| Batch `getMany()` API for multi-path lookups                        | 🚧 In Progress |
+| Optional Zod/class-validator schema validation on retrieved values  | 🚧 In Progress |
+| Unit test suite and packed-tarball consumer smoke tests             | ✅ Done        |
 
 </details>
 
@@ -435,7 +464,13 @@ A: Yes! Both `environment` and `namespace` accept `string` types in addition to 
 
 **Q: Which NestJS versions are supported?**
 
-A: The module supports NestJS v8, v9, v10, and v11 through a flexible peer dependency range (`^8.0.0 || ^9.0.0 || ^10.0.0 || ^11.0.0`).
+A: 3.x supports NestJS 12 (`@nestjs/common` `>=12.3.2 <13`). For NestJS 8 to 11, use 2.x.
+
+---
+
+**Q: Can I use the package from a CommonJS application?**
+
+A: Yes. The package is an ES module, and Node.js `^22.13.0 || >=24.11.0` loads it from `require()` through `require(esm)`. TypeScript finds the types through the top-level `types` field with `node10` resolution and through `exports` with `node16`, `nodenext` or `bundler`, which is also what TypeScript 6 uses for `module: commonjs` without `moduleResolution`. See [Migration Notes](#-migration-notes).
 
 ---
 
@@ -464,21 +499,21 @@ A: Yes, but with a caveat. The `get()` method accepts per-call overrides for `ap
 </details>
 
 ## 🔒 License
+
 This project is licensed under **MIT**.
 
-## 🙏 Acknowledgments
 ## 🙏 Acknowledgments
 
 - [NestJS](https://nestjs.com/) — The progressive Node.js framework that makes building server-side applications a joy
 - [AWS SDK for JavaScript v3](https://github.com/aws/aws-sdk-js-v3) — The modular AWS SDK powering the SSM client
 - [AWS Systems Manager Parameter Store](https://docs.aws.amazon.com/systems-manager/latest/userguide/systems-manager-parameter-store.html) — The secure, hierarchical configuration storage service
 - [Semantic Release](https://github.com/semantic-release/semantic-release) — Fully automated version management and package publishing
-- [Rollup](https://rollupjs.org/) — The module bundler enabling dual ESM/CJS output
+- [Rollup](https://rollupjs.org/) — The module bundler producing the ES module output
 - [ElsiKora](https://github.com/ElsiKora) — The team behind this module and the broader tooling ecosystem
 
 ---
 
-*Built with ❤️ for the NestJS community*
+_Built with ❤️ for the NestJS community_
 
 ---
 
